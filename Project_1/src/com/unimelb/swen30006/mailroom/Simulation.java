@@ -36,9 +36,9 @@ public class Simulation {
     public static void main(String args[]) {
 
         // Create the appropriate strategies
-        SortingStrategy sortStrategy = new SimpleSortingStrategy();
-        SelectionStrategy selectionStrategy = new SimpleSelectionStrategy();
-        DeliveryStrategy deliveryStrategy = new SimpleDeliveryStrategy();
+        SortingStrategy sortStrategy = new FillBoxesSortingStrategy();
+        SelectionStrategy selectionStrategy = new FullBoxSelectionStrategy();
+        DeliveryStrategy deliveryStrategy = new NearestFloorDeliveryStrategy();
 
         // Extract whether to print detailed runs or not
         boolean printDetailed = (args.length>0 && args[0].equals("detailed"));
