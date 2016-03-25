@@ -2,7 +2,7 @@
  *  Project 1 - Mailroom Blues
  *  @author Ricardo Garcia Rosas 643952 <ricardog@student.unimelb.edu.au>
  */
-package com.unimelb.swen30006.mailroom;
+package com.unimelb.swen30006.mailroom.rgr643952;
 
 import com.unimelb.swen30006.mailroom.DeliveryStrategy;
 import com.unimelb.swen30006.mailroom.MailItem;

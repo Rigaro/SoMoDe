@@ -2,8 +2,9 @@
  *  Project 1 - Mailroom Blues
  *  @author Ricardo Garcia Rosas 643952 <ricardog@student.unimelb.edu.au>
  */
-package com.unimelb.swen30006.mailroom;
+package com.unimelb.swen30006.mailroom.rgr643952;
 
+import com.unimelb.swen30006.mailroom.*;
 import com.unimelb.swen30006.mailroom.exceptions.*;
 
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class FillBoxesSortingStrategy implements SortingStrategy {
         // Search for the box with the most numItems with remainingUnits>0
         int maxNumItems = 0;
         String maxId = null;
-        for(StorageBox.Summary summary : available){;
+        for(StorageBox.Summary summary : available){
         	if(summary.numItems>=maxNumItems && summary.remainingUnits >= item.size){
             	//System.out.println(summary.toString());
         		maxNumItems = summary.numItems;

@@ -2,7 +2,7 @@
  *  Project 1 - Mailroom Blues
  *  @author Ricardo Garcia Rosas 643952 <ricardog@student.unimelb.edu.au>
  */
-package com.unimelb.swen30006.mailroom;
+package com.unimelb.swen30006.mailroom.rgr643952;
 
 import com.unimelb.swen30006.mailroom.SelectionStrategy;
 import com.unimelb.swen30006.mailroom.StorageBox;
@@ -27,13 +27,14 @@ public class FullBoxSelectionStrategy implements SelectionStrategy {
             }
         }
         // If there is only one box left and is not full increases the number of selection tries.
-        if (summaries.length == 1){
+        //if (summaries.length == 1){
             tries++;
             // If too many tries, just deliver last box.
-        	if(tries > 50){ 
+        	if(tries > 500){ 
+        		tries = 0;
         		return summaries[0].identifier;
         	}
-        }
+        //}
         // Otherwise no box is ready
         throw new NoBoxReadyException();
     }

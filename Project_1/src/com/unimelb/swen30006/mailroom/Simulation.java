@@ -5,6 +5,7 @@
 package com.unimelb.swen30006.mailroom;
 
 import com.unimelb.swen30006.mailroom.samples.*;
+import com.unimelb.swen30006.mailroom.rgr643952.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,19 +17,19 @@ import java.util.Arrays;
 public class Simulation {
 
     // Constants for our simulation mail generator
-    private static final int MIN_FLOOR = -1;
-    private static final int MAX_FLOOR = 20;
+    private static final int MIN_FLOOR = 1;
+    private static final int MAX_FLOOR = 200;
     private static final int NUM_MAIL = 200;
 
     // Constants for our mail storage unit
-    private static final int MAX_BOXES = 5;
-    private static final int MAX_MAIL_UNITS = 200;
+    private static final int MAX_BOXES = 50;
+    private static final int MAX_MAIL_UNITS = 20;
 
     // The floor on which the mailroom resides
-    private static final int MAIL_ROOM_LEVEL = 10;
+    private static final int MAIL_ROOM_LEVEL = 1;
 
     // The number of delivery bots
-    private static final int NUM_BOTS = 1;
+    private static final int NUM_BOTS = 20;
 
     // The default number of simulations
     private static final int NUM_RUNS = 1;
