@@ -25,7 +25,7 @@ public class FillDestinationSortingStrategy implements SortingStrategy {
         String minId = null;
         for(StorageBox.Summary summary : available){
         	if(summary.numDests<=minNumDests && summary.remainingUnits >= item.size){
-            	System.out.println(summary.toString());
+            	//System.out.println(summary.toString());
         		minNumDests = summary.numDests;
         		minId =summary.identifier;
         	}

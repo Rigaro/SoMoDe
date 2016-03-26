@@ -18,35 +18,61 @@ public class Simulation {
 
     // Constants for our simulation mail generator
     private static final int MIN_FLOOR = 1;
-    private static final int MAX_FLOOR = 200;
-    private static final int NUM_MAIL = 200;
+    private static final int MAX_FLOOR[] = {10,50,200};
+    private static final int NUM_MAIL = 1000;
 
     // Constants for our mail storage unit
-    private static final int MAX_BOXES = 50;
-    private static final int MAX_MAIL_UNITS = 20;
+    private static final int MAX_BOXES[] = {30,10,50};
+    private static final int MAX_MAIL_UNITS[] = {40,30,20};
 
     // The floor on which the mailroom resides
-    private static final int MAIL_ROOM_LEVEL = 1;
-
+    private static final int MAIL_ROOM_LEVEL[] = {10,20,2};
     // The number of delivery bots
-    private static final int NUM_BOTS = 20;
+    private static final int NUM_BOTS[] = {1,10,20};
 
     // The default number of simulations
-    private static final int NUM_RUNS = 1;
+    private static final int NUM_RUNS = 10;
 
     public static void main(String args[]) {
 
         // Create the appropriate strategies
-        SortingStrategy sortStrategy = new FillBoxesSortingStrategy();
+        SortingStrategy sortStrategy = new FloorMultipleSortingStrategy();
+        //SortingStrategy sortStrategy = new FillBoxesSortingStrategy();
         SelectionStrategy selectionStrategy = new FullBoxSelectionStrategy();
         DeliveryStrategy deliveryStrategy = new NearestFloorDeliveryStrategy();
+        
+        // Simulation selection variables
+        int sizeIndex = 0;
+        boolean predictable = true;
+        boolean printDetailed = false;
 
-        // Extract whether to print detailed runs or not
-        boolean printDetailed = (args.length>0 && args[0].equals("detailed"));
+        // Handle arguments
+        for(String arg : args){
+        	switch(arg.toLowerCase()){
+        		case "small_building":
+        			sizeIndex = 0;
+        			break;
+        		case "medium_building":
+        			sizeIndex = 1;
+        			break;
+        		case "large_building":
+        			sizeIndex = 2;
+        			break;
+        		case "random":
+        			predictable = false;
+        			break;
+        		case "detailed":
+        			printDetailed = true;
+        			break;
+        		default:
+        			System.out.println("Invalid argument(s)");
+        			break;
+        	}
+        }
 
         // Run the simulation with the appropriate arguments
-        runSimulation(MIN_FLOOR, MAX_FLOOR, NUM_MAIL, MAX_BOXES, MAX_MAIL_UNITS, NUM_BOTS,
-                MAIL_ROOM_LEVEL, true, selectionStrategy, deliveryStrategy, sortStrategy, printDetailed, NUM_RUNS);
+        runSimulation(MIN_FLOOR, MAX_FLOOR[sizeIndex], NUM_MAIL, MAX_BOXES[sizeIndex], MAX_MAIL_UNITS[sizeIndex], NUM_BOTS[sizeIndex],
+                MAIL_ROOM_LEVEL[sizeIndex], predictable, selectionStrategy, deliveryStrategy, sortStrategy, printDetailed, NUM_RUNS);
     }
 
     /**

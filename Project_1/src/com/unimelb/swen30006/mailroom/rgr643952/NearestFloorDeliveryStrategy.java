@@ -10,7 +10,7 @@ import com.unimelb.swen30006.mailroom.StorageBox;
 import com.unimelb.swen30006.mailroom.exceptions.SourceExhaustedException;
 
 /**
- * Reduces the number of distance between the steps taken for delivery by steping to the next
+ * Reduces the number of distance between the steps taken for delivery by stepping to the next
  * closest floor to the bot's current floor.
  */
 public class NearestFloorDeliveryStrategy implements DeliveryStrategy {
@@ -40,13 +40,15 @@ public class NearestFloorDeliveryStrategy implements DeliveryStrategy {
         int nearestDistance = 10000; // Large value for first comparison
         int difference;
         for(int i=0;i<item.length;i++){
-        	// Get floor difference (ABS)
+        	// Get floor difference (absolute value)
         	if(currentFloor>item[i].floor){
         		difference = currentFloor-item[i].floor;
         	}else{
         		difference = item[i].floor-currentFloor;
         	}
-        	if(difference<nearestDistance){
+        	// Select floor if the difference between current floor and analyzed floor
+        	// is small than the smallest so far.
+        	if(difference < nearestDistance){
         		destination = item[i].floor;
         		nearestDistance = difference;
         	}
