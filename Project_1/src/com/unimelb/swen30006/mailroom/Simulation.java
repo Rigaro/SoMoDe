@@ -1,6 +1,7 @@
-/* SWEN30006 Software Modelling and Design 
- * Project 1 - Mailroom Blues
- * Author: Mathew Blair <mathew.blair@unimelb.edu.au>
+/** SWEN30006 Software Modelling and Design 
+ *  Project 1 - Mailroom Blues
+ *  Author: Mathew Blair <mathew.blair@unimelb.edu.au>
+ *  Modified by: Ricardo Garcia Rosas 643952 <ricardog@student.unimelb.edu.au>
  */
 package com.unimelb.swen30006.mailroom;
 
