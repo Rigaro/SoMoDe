@@ -14,6 +14,12 @@ public class Track {
 	public Color trackColour;
 	public boolean occupied;
 	
+	/**
+	 * Track constructor
+	 * @param start Track start point.
+	 * @param end Track end point.
+	 * @param trackCol Track color.
+	 */
 	public Track(Point2D.Float start, Point2D.Float end, Color trackCol){
 		this.startPos = start;
 		this.endPos = end;
@@ -25,10 +31,19 @@ public class Track {
 		renderer.rectLine(startPos.x, startPos.y, endPos.x, endPos.y, LINE_WIDTH);
 	}
 	
+	/**
+	 * Whether a Train can enter the Track or not.
+	 * @param forward Entry direction.
+	 * @return Whether a Train can enter (true) the Track or not (false).
+	 */
 	public boolean canEnter(boolean forward){
 		return !this.occupied;
 	}
 	
+	/**
+	 * Let a Train enter the Track.
+	 * @param t the Train entering the Track.
+	 */
 	public void enter(Train t){
 		this.occupied = true;
 	}
@@ -39,6 +54,10 @@ public class Track {
 				+ occupied + "]";
 	}
 
+	/**
+	 * Let a Train leave the Track.
+	 * @param t the Train leaving the Track.
+	 */
 	public void leave(Train t){
 		this.occupied = false;
 	}

@@ -50,7 +50,8 @@ public class MetroMadness extends ApplicationAdapter {
         float h = Gdx.graphics.getHeight();
         viewport_width = VIEWPORT_WIDTH;
 		camera = new OrthographicCamera(viewport_width, viewport_width * (h / w));
-		camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
+		camera.position.set(WORLD_WIDTH / 2f, WORLD_HEIGHT / 2f, 0);
+		camera.zoom += 5.0;
 		camera.update();
 		
 		// Create our shape renderer

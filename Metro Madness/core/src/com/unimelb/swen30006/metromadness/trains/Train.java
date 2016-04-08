@@ -46,7 +46,12 @@ public class Train {
 	public int numTrips;
 	public boolean disembarked;
 
-	
+	/**
+	 * Train constructor.
+	 * @param trainLine The Line the train is going to service.
+	 * @param start The Station where the train will start its service.
+	 * @param forward The direction of the train.
+	 */
 	public Train(Line trainLine, Station start, boolean forward){
 		this.trainLine = trainLine;
 		this.station = start;
@@ -55,6 +60,10 @@ public class Train {
 		this.passengers = new ArrayList<Passenger>();
 	}
 
+	/**
+	 * Update train state and simulation.
+	 * @param delta the time delta to update the train simulation.
+	 */
 	public void update(float delta){
 		// Update all passengers
 		for(Passenger p: this.passengers){
@@ -154,6 +163,10 @@ public class Train {
 
 	}
 
+	/**
+	 * Move the simulated Train in the travel direction.
+	 * @param delta the time delta to update the train simulation.
+	 */
 	public void move(float delta){
 		// Work out where we're going
 		float angle = angleAlongLine(this.pos.x,this.pos.y,this.station.position.x,this.station.position.y);
@@ -162,11 +175,19 @@ public class Train {
 		this.pos.setLocation(newX, newY);
 	}
 
+	/**
+	 * Embark a given passenger to the train. Not properly implemented (kind of abstract).
+	 * @param p The Passenger to embark the Train.
+	 * @throws Exception Train full Exception.
+	 */
 	public void embark(Passenger p) throws Exception {
 		throw new Exception();
 	}
 
-
+	/**
+	 * Disembarks the Passengers that have the current Station as final or partial destination.
+	 * @return The List of Passengers disembarking the Train.
+	 */
 	public ArrayList<Passenger> disembark(){
 		ArrayList<Passenger> disembarking = new ArrayList<Passenger>();
 		Iterator<Passenger> iterator = this.passengers.iterator();
@@ -186,6 +207,10 @@ public class Train {
 				+ ", numTrips=" + numTrips + ", disembarked=" + disembarked + "]";
 	}
 
+	/**
+	 * Is the train in a Station?
+	 * @return whether the train is in a Station (true) or not (false).
+	 */
 	public boolean inStation(){
 		return (this.state == State.IN_STATION || this.state == State.READY_DEPART);
 	}

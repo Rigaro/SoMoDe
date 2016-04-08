@@ -12,6 +12,9 @@ public class BigPassengerTrain extends Train {
 		super(trainLine, start, forward);
 	}
 	
+	/**
+	 * Embarks a Passenger on the Train by adding it to the passengers List.
+	 */
 	@Override
 	public void embark(Passenger p) throws Exception {
 		if(this.passengers.size() > 80){
