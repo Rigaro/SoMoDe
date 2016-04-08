@@ -15,7 +15,8 @@ public class ImageShop {
 		doc.outputFile = "output";
 		doc.addTransform(effect);
 		doc.renderImage("output");
-		
+		// doc calls imageDocument method writeImage?? But that belongs to Loader.
+		loader.writeImage(doc, "output");
 	}
 	private Effect[] processTransforms(String args[]){
 		Effect effect[] = new Effect[1];
