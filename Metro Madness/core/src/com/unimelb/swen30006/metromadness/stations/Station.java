@@ -24,6 +24,13 @@ public class Station {
 	public static final float DEPARTURE_TIME = 2;
 	public PassengerRouter router;
 
+	/**
+	 * Station constructor.
+	 * @param x The x position.
+	 * @param y The y position.
+	 * @param router The PassengerRouter to be used.
+	 * @param name The Station's name.
+	 */
 	public Station(float x, float y, PassengerRouter router, String name){
 		this.name = name;
 		this.router = router;
@@ -32,6 +39,10 @@ public class Station {
 		this.trains = new ArrayList<Train>();
 	}
 	
+	/**
+	 * Register a Line serviced by the Station in its "database".
+	 * @param l The Line to be registered.
+	 */
 	public void registerLine(Line l){
 		this.lines.add(l);
 	}
@@ -52,6 +63,11 @@ public class Station {
 		renderer.circle(this.position.x, this.position.y, radius, NUM_CIRCLE_STATMENTS);		
 	}
 	
+	/**
+	 * Lets a Train enter the Station.
+	 * @param t The Train entering the Station.
+	 * @throws Exception Station Full
+	 */
 	public void enter(Train t) throws Exception {
 		if(trains.size() >= PLATFORMS){
 			throw new Exception();
@@ -60,7 +76,11 @@ public class Station {
 		}
 	}
 	
-	
+	/**
+	 * Lets a Train leave the Station.
+	 * @param t the Train leaving the Station.
+	 * @throws Exception Train not in Station.
+	 */
 	public void depart(Train t) throws Exception {
 		if(this.trains.contains(t)){
 			this.trains.remove(t);
@@ -69,6 +89,12 @@ public class Station {
 		}
 	}
 	
+	/**
+	 * Checks if a platform at the Station servicing the given Line is available.
+	 * @param l the given Line.
+	 * @return true if there are available platforms for the Line.
+	 * @throws Exception Line not serviced by Station.
+	 */
 	public boolean canEnter(Line l) throws Exception {
 		return trains.size() < PLATFORMS;
 	}
@@ -78,6 +104,11 @@ public class Station {
 		return DEPARTURE_TIME;
 	}
 
+	/**
+	 * Checks if a given Passenger should leave the Train at the Station.
+	 * @param p the Passenger.
+	 * @return true if the Passenger should leave.
+	 */
 	public boolean shouldLeave(Passenger p) {
 		return this.router.shouldLeave(this, p);
 	}
@@ -88,6 +119,11 @@ public class Station {
 				+ ", router=" + router + "]";
 	}
 
+	/**
+	 * Create a new passenger.
+	 * @param s the Station where the Passenger is entering.
+	 * @return the created Passenger.
+	 */
 	public Passenger generatePassenger(Station s) {
 		return new Passenger(this, s);
 	}

@@ -11,6 +11,12 @@ public class DualTrack extends Track {
 	public boolean forwardOccupied;
 	public boolean backwardOccupied;
 	
+	/**
+	 * DualTrack constructor.
+	 * @param start The start position.
+	 * @param end The end position.
+	 * @param col the Track's Color.
+	 */
 	public DualTrack(Float start, Float end, Color col) {
 		super(start, end, col);
 		this.forwardOccupied = false;
@@ -24,6 +30,9 @@ public class DualTrack extends Track {
 		renderer.setColor(this.trackColour);
 	}
 	
+	/**
+	 * Lets a Train into the Track in the desired direction.
+	 */
 	@Override
 	public void enter(Train t){
 		if(t.forward){
@@ -32,7 +41,10 @@ public class DualTrack extends Track {
 			this.backwardOccupied = true;
 		}
 	}
-
+	
+	/**
+	 * Whether a Train can enter the Track in the desired direction.
+	 */
 	@Override
 	public boolean canEnter(boolean forward) {
 		if(forward){
@@ -42,6 +54,9 @@ public class DualTrack extends Track {
 		}
 	}
 
+	/**
+	 * Let a Train leave the Track in the desired direction.
+	 */
 	@Override
 	public void leave(Train t) {
 		if(t.forward){

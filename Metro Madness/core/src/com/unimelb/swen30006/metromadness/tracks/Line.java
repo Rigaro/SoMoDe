@@ -19,7 +19,12 @@ public class Line {
 	// The tracks on this line between stations
 	public ArrayList<Track> tracks;
 		
-	// Create a line
+	/**
+	 * Line constructor
+	 * @param stationColour the Color of the Stations included in the Line.
+	 * @param lineColour the Color of the line.
+	 * @param name The Line name.
+	 */
 	public Line(Color stationColour, Color lineColour, String name){
 		// Set the line colour
 		this.lineColour = stationColour;
@@ -31,7 +36,11 @@ public class Line {
 		this.tracks = new ArrayList<Track>();
 	}
 	
-	
+	/**
+	 * Adds a Station to the end of the Line.
+	 * @param s the Station to be added.
+	 * @param two_way whether the track servicing the Station is two way or not.
+	 */
 	public void addStation(Station s, Boolean two_way){
 		// We need to build the track if this is adding to existing stations
 		if(this.stations.size() > 0){
@@ -58,7 +67,12 @@ public class Line {
 		return "Line [lineColour=" + lineColour + ", trackColour=" + trackColour + ", name=" + name + "]";
 	}
 
-
+	/**
+	 * Finds if the given Station is the end of Line (first or last Station).
+	 * @param s the Station to check
+	 * @return true if the Station is the end of Line.
+	 * @throws Exception the Station is not part of the Line.
+	 */
 	public boolean endOfLine(Station s) throws Exception{
 		if(this.stations.contains(s)){
 			int index = this.stations.indexOf(s);
@@ -68,8 +82,13 @@ public class Line {
 		}
 	}
 
-	
-	
+	/**
+	 * Obtains the Track following the given Station in the desired direction (forward).
+	 * @param currentStation the current Station for the search.
+	 * @param forward the travel direction.
+	 * @return the next Track servicing the Line after the given Station.
+	 * @throws Exception Index out of Bounds (station not found).
+	 */
 	public Track nextTrack(Station currentStation, boolean forward) throws Exception {
 		if(this.stations.contains(currentStation)){
 			// Determine the track index
@@ -89,6 +108,13 @@ public class Line {
 		}
 	}
 	
+	/**
+	 * Obtains the next Station following a given Station and direction.
+	 * @param s the current Station.
+	 * @param forward the travel direction.
+	 * @return the next Station following the given Station and direction.
+	 * @throws Exception Index out of Bounds (station not found)
+	 */
 	public Station nextStation(Station s, boolean forward) throws Exception{
 		if(this.stations.contains(s)){
 			int curIndex = this.stations.lastIndexOf(s);
