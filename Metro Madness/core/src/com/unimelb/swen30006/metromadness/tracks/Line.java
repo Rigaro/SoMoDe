@@ -9,15 +9,15 @@ import com.unimelb.swen30006.metromadness.stations.Station;
 public class Line {
 	
 	// The colour of this line
-	public Color lineColour;
-	public Color trackColour;
+	private Color lineColour;
+	private Color trackColour;
 	
 	// The name of this line
-	public String name;
+	private String name;
 	// The stations on this line
-	public ArrayList<Station> stations;
+	private ArrayList<Station> stations;
 	// The tracks on this line between stations
-	public ArrayList<Track> tracks;
+	private ArrayList<Track> tracks;
 		
 	/**
 	 * Line constructor
@@ -41,7 +41,7 @@ public class Line {
 	 * @param s the Station to be added.
 	 * @param two_way whether the track servicing the Station is two way or not.
 	 */
-	public void addStation(Station s, Boolean two_way){
+	public void addStation(Station station, Boolean two_way){
 		// We need to build the track if this is adding to existing stations
 		if(this.stations.size() > 0){
 			// Get the last station
@@ -50,16 +50,16 @@ public class Line {
 			// Generate a new track
 			Track t;
 			if(two_way){
-				t = new DualTrack(last.position, s.position, this.trackColour);
+				t = new DualTrack(last.getPosition(), station.getPosition(), this.trackColour);
 			} else {
-				t = new Track(last.position, s.position, this.trackColour);
+				t = new Track(last.getPosition(), station.getPosition(), this.trackColour);
 			}
 			this.tracks.add(t);
 		}
 		
 		// Add the station
-		s.registerLine(this);
-		this.stations.add(s);
+		station.registerLine(this);
+		this.stations.add(station);
 	}
 	
 	@Override
@@ -86,10 +86,10 @@ public class Line {
 	 * Obtains the Track following the given Station in the desired direction (forward).
 	 * @param currentStation the current Station for the search.
 	 * @param forward the travel direction.
-	 * @return the next Track servicing the Line after the given Station.
+	 * @return the next Track's ID servicing the Line after the given Station.
 	 * @throws Exception Index out of Bounds (station not found).
 	 */
-	public Track nextTrack(Station currentStation, boolean forward) throws Exception {
+	public int nextTrack(Station currentStation, boolean forward) throws Exception {
 		if(this.stations.contains(currentStation)){
 			// Determine the track index
 			int curIndex = this.stations.lastIndexOf(currentStation);
@@ -100,7 +100,7 @@ public class Line {
 			if((curIndex < 0) || (curIndex > this.tracks.size()-1)){
 				throw new Exception();
 			} else {
-				return this.tracks.get(curIndex);
+				return this.tracks.get(curIndex).getId();
 			}
 			
 		} else {
@@ -131,6 +131,47 @@ public class Line {
 		}
 	}
 	
+	/**
+	 * Clears a Track when a Train leaves it in a certain direction.
+	 * @param trackId the Track's id.
+	 * @param forward the travel direction
+	 */
+	public void clearTrack(int trackId, boolean forward){
+		for(Track track : tracks){
+			if(track.getId() == trackId){
+				track.leave(forward);
+				return;
+			}
+		}		
+	}
+	
+	/**
+	 * Clears a Track when a Train leaves it in a certain direction.
+	 * @param trackId the Track's id.
+	 * @param forward the travel direction
+	 */
+	public boolean trackAvailable(int trackId, boolean forward){
+		for(Track track : tracks){
+			if(track.getId() == trackId){
+				return track.canEnter(forward);
+			}
+		}		
+		return false;
+	}
+	
+	/**
+	 * Occupies a Track when a Train enters it in a certain direction.
+	 * @param trackId the Track's id.
+	 * @param forward the travel direction
+	 */
+	public void enterTrack(int trackId, boolean forward){
+		for(Track track : tracks){
+			if(track.getId() == trackId){
+				track.enter(forward);
+				return;
+			}
+		}		
+	}
 	public void render(ShapeRenderer renderer){
 		// Set the color to our line
 		renderer.setColor(trackColour);
@@ -140,5 +181,20 @@ public class Line {
 			t.render(renderer);
 		}	
 	}
+
+	/**
+	 * @return the stations
+	 */
+	public ArrayList<Station> getStations() {
+		return stations;
+	}
 	
+	public Color getLineColour() {
+		return lineColour;
+	}
+	
+	public String getName(){
+		return name;
+	}
+
 }

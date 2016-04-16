@@ -27,7 +27,7 @@ public class Train {
 	public static final float TRAIN_SPEED=50f;
 
 	// The line that this is traveling on
-	public Line trainLine;
+	public String trainLine;
 
 	// Passenger Information
 	public ArrayList<Passenger> passengers;
@@ -35,7 +35,7 @@ public class Train {
 	
 	// Station and track and position information
 	public Station station; 
-	public Track track;
+	public int trackId;
 	public Point2D.Float pos;
 
 	// Direction and direction
@@ -225,6 +225,23 @@ public class Train {
 			renderer.setColor(col);
 			renderer.circle(this.pos.x, this.pos.y, TRAIN_WIDTH);
 		}
+	}
+	
+	public boolean getDirection(){
+		return forward;
+	}
+	
+	public int getTrackId(){
+		return trackId;
+	}
+	
+	public void setDirection(boolean forward){
+		this.forward = forward;
+	}
+	
+	public void updateNext(int trackId, Station station){
+		this.trackId = trackId;
+		this.station = station;
 	}
 	
 }

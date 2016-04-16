@@ -6,23 +6,26 @@ import java.util.ArrayList;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.unimelb.swen30006.metromadness.passengers.Passenger;
+import com.unimelb.swen30006.metromadness.passengers.PassengerGenerator;
 import com.unimelb.swen30006.metromadness.routers.PassengerRouter;
 import com.unimelb.swen30006.metromadness.tracks.Line;
+import com.unimelb.swen30006.metromadness.tracks.Track;
 import com.unimelb.swen30006.metromadness.trains.Train;
 
 public class Station {
 	
-	public static final int PLATFORMS=2;
+	private static final int PLATFORMS=2;
 	
-	public Point2D.Float position;
-	public static final float RADIUS=6;
-	public static final int NUM_CIRCLE_STATMENTS=100;
-	public static final int MAX_LINES=3;
-	public String name;
-	public ArrayList<Line> lines;
-	public ArrayList<Train> trains;
-	public static final float DEPARTURE_TIME = 2;
-	public PassengerRouter router;
+	private Point2D.Float position;
+	private static final float RADIUS=6;
+	private static final int NUM_CIRCLE_STATMENTS=100;
+	private static final int MAX_LINES=3;
+	private String name;
+	private ArrayList<Line> lines;
+	private ArrayList<Train> trains;
+	private static final float DEPARTURE_TIME = 2;
+	private PassengerGenerator generator;
+	public ArrayList<Passenger> waiting;
 
 	/**
 	 * Station constructor.
@@ -31,9 +34,9 @@ public class Station {
 	 * @param router The PassengerRouter to be used.
 	 * @param name The Station's name.
 	 */
-	public Station(float x, float y, PassengerRouter router, String name){
+	public Station(float x, float y, PassengerGenerator generator, String name){
 		this.name = name;
-		this.router = router;
+		this.generator = generator;
 		this.position = new Point2D.Float(x,y);
 		this.lines = new ArrayList<Line>();
 		this.trains = new ArrayList<Train>();
@@ -51,7 +54,7 @@ public class Station {
 		float radius = RADIUS;
 		for(int i=0; (i<this.lines.size() && i<MAX_LINES); i++){
 			Line l = this.lines.get(i);
-			renderer.setColor(l.lineColour);
+			renderer.setColor(l.getLineColour());
 			renderer.circle(this.position.x, this.position.y, radius, NUM_CIRCLE_STATMENTS);
 			radius = radius - 1;
 		}
@@ -62,28 +65,100 @@ public class Station {
 		renderer.setColor(c);
 		renderer.circle(this.position.x, this.position.y, radius, NUM_CIRCLE_STATMENTS);		
 	}
+
+	/**
+	 * Searches for a Line in the registered lines by its name.
+	 * @param lineName the Line name.
+	 * @return the Line when found.
+	 */
+	private Line getLine(String lineName) throws Exception{
+		for(Line line : this.lines){
+			if(line.getName() == lineName){
+				return line;
+			}
+		}
+		throw new Exception();
+	}
 	
 	/**
 	 * Lets a Train enter the Station.
 	 * @param t The Train entering the Station.
 	 * @throws Exception Station Full
 	 */
-	public void enter(Train t) throws Exception {
+	public void enter(Train incomingTrain) throws Exception {
+		// Check that there is an available platform
 		if(trains.size() >= PLATFORMS){
 			throw new Exception();
 		} else {
-			this.trains.add(t);
+			// Add Train to platforms and clear the Track it was using.
+			this.trains.add(incomingTrain);
+			Line trainLine = getLine(incomingTrain.trainLine);
+			trainLine.clearTrack(incomingTrain.getTrackId(), incomingTrain.getDirection());
 		}
 	}
 	
+	/**
+	 * Processes the disembarking Passengers.
+	 * @param disembarking the disembarking Passengers.
+	 */
+	public void processDisembarking(ArrayList<Passenger> disembarking){
+		for(Passenger passenger : disembarking){
+			// if Passenger reached destination let it out, otherwise return to waiting.
+			if(passenger.getDestination()==this.name){
+				passenger.exit();
+			}
+			else{
+				waiting.add(passenger);
+			}
+		}
+	}
+	
+	/**
+	 * Checks if a Train can leave the Station.
+	 * @param t the Train leaving the Station.
+	 * @throws Exception Train not in Station.
+	 */
+	public boolean canDepart(Train departingTrain) throws Exception {
+		// Check that the train is actually in the station.
+		if(this.trains.contains(departingTrain)){
+			// Get the direction and the Line the Train is servicing.
+			boolean direction = departingTrain.getDirection();
+			Line trainLine = getLine(departingTrain.trainLine);
+			// Change direction if this Station is the end of Line.
+			if(trainLine.endOfLine(this)){
+				departingTrain.setDirection(!direction);
+				direction = !direction;
+			}
+			// Get the new 
+			int nextTrackId = trainLine.nextTrack(this, direction);
+			return trainLine.trackAvailable(nextTrackId, direction);
+		} else {
+			throw new Exception();
+		}
+	}
 	/**
 	 * Lets a Train leave the Station.
 	 * @param t the Train leaving the Station.
 	 * @throws Exception Train not in Station.
 	 */
-	public void depart(Train t) throws Exception {
-		if(this.trains.contains(t)){
-			this.trains.remove(t);
+	public void depart(Train departingTrain) throws Exception {
+		// Check that the train is actually in the station.
+		if(this.trains.contains(departingTrain)){
+			// Get the direction and the Line the Train is servicing.
+			boolean direction = departingTrain.getDirection();
+			Line trainLine = getLine(departingTrain.trainLine);
+			// Change direction if this Station is the end of Line.
+			if(trainLine.endOfLine(this)){
+				departingTrain.setDirection(!direction);
+				direction = !direction;
+			}
+			// Get the information about the next destination and update it.
+			int nextTrackId = trainLine.nextTrack(this, direction);
+			Station nextStation = trainLine.nextStation(this, direction);
+			departingTrain.updateNext(nextTrackId,nextStation);
+			// Enter the Track and leave the Station.
+			trainLine.enterTrack(nextTrackId, direction);
+			this.trains.remove(departingTrain);
 		} else {
 			throw new Exception();
 		}
@@ -95,7 +170,7 @@ public class Station {
 	 * @return true if there are available platforms for the Line.
 	 * @throws Exception Line not serviced by Station.
 	 */
-	public boolean canEnter(Line l) throws Exception {
+	public boolean canEnter(String line) throws Exception {
 		return trains.size() < PLATFORMS;
 	}
 
@@ -104,29 +179,21 @@ public class Station {
 		return DEPARTURE_TIME;
 	}
 
-	/**
-	 * Checks if a given Passenger should leave the Train at the Station.
-	 * @param p the Passenger.
-	 * @return true if the Passenger should leave.
-	 */
-	public boolean shouldLeave(Passenger p) {
-		return this.router.shouldLeave(this, p);
-	}
 
 	@Override
 	public String toString() {
 		return "Station [position=" + position + ", name=" + name + ", trains=" + trains.size()
-				+ ", router=" + router + "]";
+				+ ", generator=" + generator + "]";
 	}
 
 	/**
-	 * Create a new passenger.
-	 * @param s the Station where the Passenger is entering.
-	 * @return the created Passenger.
+	 * @return the position
 	 */
-	public Passenger generatePassenger(Station s) {
-		return new Passenger(this, s);
+	public Point2D.Float getPosition() {
+		return position;
 	}
 	
-	
+	public String getName(){
+		return name;
+	}
 }

@@ -4,18 +4,19 @@ import java.awt.geom.Point2D;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.unimelb.swen30006.metromadness.trains.Train;
 
 public class Track {
-	public static final float DRAW_RADIUS=10f;
-	public static final int LINE_WIDTH=6;
-	public Point2D.Float startPos;
-	public Point2D.Float endPos;
-	public Color trackColour;
-	public boolean occupied;
+	protected static final float DRAW_RADIUS=10f;
+	protected static final int LINE_WIDTH=6;
+	protected Point2D.Float startPos;
+	protected Point2D.Float endPos;
+	protected Color trackColour;
+	private static int idCount = 0;
+	private int id;
+	private boolean occupied;
 	
 	/**
-	 * Track constructor
+	 * Track constructor.
 	 * @param start Track start point.
 	 * @param end Track end point.
 	 * @param trackCol Track color.
@@ -24,7 +25,16 @@ public class Track {
 		this.startPos = start;
 		this.endPos = end;
 		this.trackColour = trackCol;
+		this.id = Track.idCount;
+		increaseIdCount();
 		this.occupied = false;
+	}
+	
+	/**
+	 * Increases the count of the static id counter.
+	 */
+	private static void increaseIdCount(){
+		Track.idCount++;
 	}
 	
 	public void render(ShapeRenderer renderer){
@@ -42,9 +52,9 @@ public class Track {
 	
 	/**
 	 * Let a Train enter the Track.
-	 * @param t the Train entering the Track.
+	 * @param forward Direction the Train is entering the track.
 	 */
-	public void enter(Train t){
+	public void enter(boolean forward){
 		this.occupied = true;
 	}
 	
@@ -56,9 +66,17 @@ public class Track {
 
 	/**
 	 * Let a Train leave the Track.
-	 * @param t the Train leaving the Track.
+	 * @param forward Direction the Train is leaving the track.
 	 */
-	public void leave(Train t){
+	public void leave(boolean forward){
 		this.occupied = false;
+	}
+
+	/**
+	 * Get Track id.
+	 * @return the Track id.
+	 */
+	public int getId() {
+		return id;
 	}
 }

@@ -2,52 +2,44 @@ package com.unimelb.swen30006.metromadness.passengers;
 
 import java.util.ArrayList;
 
+import com.unimelb.swen30006.metromadness.routers.PassengerRouter;
 import com.unimelb.swen30006.metromadness.stations.Station;
 import com.unimelb.swen30006.metromadness.tracks.Line;
 
 public class PassengerGenerator {
 	
-	// The station that passengers are getting on
-	public Station s;
-	// The line they are travelling on
-	public ArrayList<Line> lines;
+	// The router
+	private PassengerRouter router;
+	
+	// The lines available
+	private ArrayList<Line> lines;
 	
 	// The max volume
-	public float maxVolume;
+	private float maxVolume;
 	
-	public PassengerGenerator(Station s, ArrayList<Line> lines, float max){
-		this.s = s;
+	public PassengerGenerator(ArrayList<Line> lines, float max, PassengerRouter router){
 		this.lines = lines;
 		this.maxVolume = max;
+		this.router = router;
 	}
 	
-	public Passenger[] generatePassengers(){
+	public Passenger[] generatePassengers(Station beginning){
 		int count = (int) (Math.random()*maxVolume);
 		Passenger[] passengers = new Passenger[count];
 		for(int i=0; i<count; i++){
-			passengers[i] = generatePassenger();
+			passengers[i] = generatePassenger(beginning);
 		}
 		return passengers;
 	}
 	
-	public Passenger generatePassenger(){
-		// Pick a random station from the line
-		Line l = this.lines.get((int)Math.random()*(this.lines.size()-1));
-		int current_station = l.stations.indexOf(this.s);
-		boolean forward = Math.random()>0.5f;
-		
-		// If we are the end of the line then set our direction forward or backward
-		if(current_station == 0){
-			forward = true;
-		}else if (current_station == l.stations.size()-1){
-			forward = false;
-		}
-		
-		// Find the station
-		int index = (int) ( forward ? Math.random()*(current_station+1) : Math.random()*(current_station-1));
-		Station s = l.stations.get(index);
-		
-		return this.s.generatePassenger(s);
+	public Passenger generatePassenger(Station beginning){
+		// Pick a random line
+		Line line = this.lines.get((int)Math.random()*(this.lines.size()-1));
+		// Pick a random station from that line
+		ArrayList<Station> stations = line.getStations();
+		Station destination = stations.get((int)Math.random()*(stations.size()-1));		
+		// Create the Passenger
+		return new Passenger(beginning.getName(), destination.getName(), this.router);
 	}
 	
 }

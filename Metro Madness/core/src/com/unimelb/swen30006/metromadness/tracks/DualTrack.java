@@ -4,7 +4,6 @@ import java.awt.geom.Point2D.Float;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.unimelb.swen30006.metromadness.trains.Train;
 
 public class DualTrack extends Track {
 
@@ -34,8 +33,8 @@ public class DualTrack extends Track {
 	 * Lets a Train into the Track in the desired direction.
 	 */
 	@Override
-	public void enter(Train t){
-		if(t.forward){
+	public void enter(boolean forward){
+		if(forward){
 			this.forwardOccupied = true;
 		} else {
 			this.backwardOccupied = true;
@@ -58,8 +57,8 @@ public class DualTrack extends Track {
 	 * Let a Train leave the Track in the desired direction.
 	 */
 	@Override
-	public void leave(Train t) {
-		if(t.forward){
+	public void leave(boolean forward) {
+		if(forward){
 			this.forwardOccupied = false;
 		} else {
 			this.backwardOccupied = false;

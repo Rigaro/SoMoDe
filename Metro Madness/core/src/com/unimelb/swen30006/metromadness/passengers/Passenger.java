@@ -1,27 +1,46 @@
 package com.unimelb.swen30006.metromadness.passengers;
 
-import com.unimelb.swen30006.metromadness.stations.Station;
+import java.util.Stack;
+
+import com.unimelb.swen30006.metromadness.routers.PassengerRouter;
 
 public class Passenger {
 
-	public Station begining;
-	public Station destination;
-	public float travelTime;
-	public boolean reachedDestination;
+	private String begining;
+	private String destination;
+	private Stack<String> stationRoute;
+	private float travelTime;
+	private boolean reachedDestination;
 	
-	public Passenger(Station start, Station end){
+	/**
+	 * Passenger constructor
+	 * @param start
+	 * @param end
+	 */
+	public Passenger(String start, String end, PassengerRouter router){
 		this.begining = start;
 		this.destination = end;
+		this.stationRoute.push(destination);
+		this.stationRoute.push("Flinders St");
 		this.reachedDestination = false;
 		this.travelTime = 0;
 	}
 	
+	/**
+	 * Update travel time.
+	 * @param time
+	 */
 	public void update(float time){
 		if(!this.reachedDestination){
 			this.travelTime += time;
 		}
 	}
 
+	public String getDestination(){
+		return destination;
+	}
 	
-	
+	public void exit(){
+		reachedDestination = true;
+	}
 }
