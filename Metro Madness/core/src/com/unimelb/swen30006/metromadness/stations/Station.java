@@ -22,6 +22,7 @@ public class Station {
 	private static final int NUM_CIRCLE_STATMENTS=100;
 	private static final int MAX_LINES=3;
 	private String name;
+	private int maxPassenger;
 	private ArrayList<Line> lines;
 	private ArrayList<Train> trains;
 	private static final float DEPARTURE_TIME = 2;
@@ -35,12 +36,13 @@ public class Station {
 	 * @param router The PassengerRouter to be used.
 	 * @param name The Station's name.
 	 */
-	public Station(float x, float y, PassengerGenerator generator, String name){
+	public Station(float x, float y, String name, int maxPassenger){
 		this.name = name;
-		this.generator = generator;
+		this.maxPassenger = maxPassenger;
 		this.position = new Point2D.Float(x,y);
 		this.lines = new ArrayList<Line>();
 		this.trains = new ArrayList<Train>();
+		this.waiting = new ArrayList<Passenger>();
 	}
 	
 	/**
@@ -103,19 +105,53 @@ public class Station {
 	 * @param embarkingTrain the embarking Train.
 	 * @throws Exception Train is full.
 	 */
-	public void processEmbarking(Train embarkingTrain) throws Exception{
-		Iterator<Passenger> iterator = this.waiting.iterator();
-		while(iterator.hasNext()){
-			Passenger passenger = iterator.next();
+	public void processEmbarking(Train embarkingTrain){
+		// Add the waiting Passengers
+		ArrayList<Passenger> embarking = new ArrayList<Passenger>();
+		for(Passenger passenger : this.waiting){
 			// Check that the Train is not full
-			if(!embarkingTrain.canEmbark())
-				break;
-			// If Passenger should board, embark it and remove from waiting.
+			if(!embarkingTrain.canEmbark()){
+				return;
+			}
+			// If Passenger should board, embark it.
 			if(passenger.shouldBoard(embarkingTrain.getTrainLine(), embarkingTrain.getDirection())){
-				embarkingTrain.embark(passenger);
-				iterator.remove();
+				try{
+					embarkingTrain.embark(passenger);
+					embarking.add(passenger);
+				}catch(Exception e){
+					// Train full, break
+					break;
+				}
 			}
 		}
+		// Remove from waiting
+		for(Passenger passenger : embarking){
+			waiting.remove(passenger);			
+		}
+		System.out.println("Processed waiting");
+		// Create a new set of passengers and check if they can board
+		Passenger[] ps = this.generator.generatePassengers(this,this.maxPassenger);
+		for(Passenger p: ps){
+			// If can embark check if the passenger wants to board that train
+			if(embarkingTrain.canEmbark()){
+				if(p.shouldBoard(embarkingTrain.getTrainLine(), embarkingTrain.getDirection())){
+					System.out.println("Should board: " + p.toString());
+					try{
+						embarkingTrain.embark(p);
+					}
+					catch(Exception e){
+						// Train full, break
+						break;
+					}
+				}
+				else{
+					this.waiting.add(p);
+				}
+			}else{
+				this.waiting.add(p);
+			}
+		}
+		System.out.println("Processed new");
 	}
 	
 	/**
@@ -147,7 +183,6 @@ public class Station {
 			Line trainLine = getLine(departingTrain.getTrainLine());
 			// Change direction if this Station is the end of Line.
 			if(trainLine.endOfLine(this)){
-				departingTrain.setDirection(!direction);
 				direction = !direction;
 			}
 			// Get the new 
@@ -170,6 +205,7 @@ public class Station {
 			Line trainLine = getLine(departingTrain.getTrainLine());
 			// Change direction if this Station is the end of Line.
 			if(trainLine.endOfLine(this)){
+				System.out.println("EOL");
 				departingTrain.setDirection(!direction);
 				direction = !direction;
 			}
@@ -200,6 +236,9 @@ public class Station {
 		return DEPARTURE_TIME;
 	}
 
+	public void setGenerator(PassengerGenerator generator){
+		this.generator = generator;
+	}
 
 	@Override
 	public String toString() {

@@ -11,25 +11,19 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
-import com.unimelb.swen30006.metromadness.passengers.PassengerGenerator;
 // The things we are generating
-import com.unimelb.swen30006.metromadness.routers.PassengerRouter;
-import com.unimelb.swen30006.metromadness.routers.SimpleRouter;
-import com.unimelb.swen30006.metromadness.stations.ActiveStation;
 import com.unimelb.swen30006.metromadness.stations.Station;
 import com.unimelb.swen30006.metromadness.tracks.Line;
-import com.unimelb.swen30006.metromadness.trains.BigPassengerTrain;
-import com.unimelb.swen30006.metromadness.trains.SmallPassengerTrain;
 import com.unimelb.swen30006.metromadness.trains.Train;
 
 public class MapReader {
 
-	public ArrayList<Train> trains;
-	public HashMap<String, Station> stations;
-	public HashMap<String, Line> lines;
+	private ArrayList<Train> trains;
+	private HashMap<String, Station> stations;
+	private HashMap<String, Line> lines;
 
-	public boolean processed;
-	public String filename;
+	private boolean processed;
+	private String filename;
 
 	public MapReader(String filename){
 		this.trains = new ArrayList<Train>();
@@ -45,7 +39,7 @@ public class MapReader {
 			FileHandle file = Gdx.files.internal("assets/maps/melbourne.xml");			
 			XmlReader reader = new XmlReader();
 			Element root = reader.parse(file);
-			
+
 			// Process stations
 			Element stations = root.getChildByName("stations");
 			Array<Element> stationList = stations.getChildrenByName("station");
@@ -61,9 +55,7 @@ public class MapReader {
 				Line l = processLine(e);
 				this.lines.put(l.getName(), l);
 			}
-
-			PassengerGenerator g = createGenerator(this.getLines(),maxPax);
-
+						
 			// Process Trains
 			Element trains = root.getChildByName("trains");
 			Array<Element> trainList = trains.getChildrenByName("train");
@@ -101,6 +93,7 @@ public class MapReader {
 		String line = e.get("line");
 		String start = e.get("start");
 		boolean dir = e.getBoolean("direction");
+		//int size = e.getInt("capacity");
 
 		// Retrieve the lines and stations
 		Line l = this.lines.get(line);
@@ -146,11 +139,7 @@ public class MapReader {
 		
 		return l;
 	}
-	
-	private PassengerGenerator createGenerator(Collection<Line> lines, float maxVolume){
-		return new PassengerGenerator(lines, maxVolume);
-	}
-	
+		
 	private Color extractColour(Element e){
 		float red = e.getFloat("red")/255f;
 		float green = e.getFloat("green")/255f;

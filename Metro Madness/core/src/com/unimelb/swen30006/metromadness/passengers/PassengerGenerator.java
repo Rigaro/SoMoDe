@@ -1,9 +1,9 @@
 package com.unimelb.swen30006.metromadness.passengers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Stack;
 
-import com.unimelb.swen30006.metromadness.routers.PassengerRouter;
 import com.unimelb.swen30006.metromadness.stations.Station;
 import com.unimelb.swen30006.metromadness.tracks.Line;
 
@@ -12,12 +12,7 @@ public class PassengerGenerator {
 	// The lines available
 	private ArrayList<Line> lines;
 	
-	// The max volume
-	private float maxVolume;
-	
-	public PassengerGenerator(ArrayList<Line> lines, float max){
-		this.lines = lines;
-		this.maxVolume = max;
+	public PassengerGenerator(){
 	}
 	
 	/**
@@ -25,7 +20,7 @@ public class PassengerGenerator {
 	 * @param beginning the beginning Station.
 	 * @return the new group of Passengers.
 	 */
-	public Passenger[] generatePassengers(Station beginning){
+	public Passenger[] generatePassengers(Station beginning, int maxVolume){
 		int count = (int) (Math.random()*maxVolume);
 		Passenger[] passengers = new Passenger[count];
 		for(int i=0; i<count; i++){
@@ -71,8 +66,8 @@ public class PassengerGenerator {
 			// Add the start line
 			lineRoute.push(startLine.getName());
 			// Move forward to the transfer hub and then change direction.
-			direction.push("forward");
 			direction.push("backward");
+			direction.push("forward");
 		}
 		else{
 			// Decide direction.
@@ -86,6 +81,10 @@ public class PassengerGenerator {
 		// Create the Passenger
 		return new Passenger(destination.getName(),lineRoute,stationRoute,direction);
 		
+	}
+	
+	public void addLines(ArrayList<Line> lines){
+		this.lines = lines;
 	}
 	
 }
