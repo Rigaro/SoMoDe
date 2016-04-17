@@ -149,17 +149,12 @@ public class Station {
 		Passenger[] ps = this.generator.generatePassengers(this,this.maxPassenger);
 		for(Passenger p: ps){
 			// If can embark check if the passenger wants to board that train
-			if(embarkingTrain.canEmbark()){
-				if(p.shouldBoard(embarkingTrain.getTrainLine(), direction)){
-					try{
-						embarkingTrain.embark(p);
-					}
-					catch(Exception e){
-						// Train full add passenger to waiting
-						this.waiting.add(p);
-					}
+			if(embarkingTrain.canEmbark()&&p.shouldBoard(embarkingTrain.getTrainLine(), direction)){
+				try{
+					embarkingTrain.embark(p);
 				}
-				else{
+				catch(Exception e){
+					// Train full add passenger to waiting
 					this.waiting.add(p);
 				}
 			}else{
