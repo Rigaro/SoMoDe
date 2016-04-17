@@ -66,11 +66,6 @@ public class Line {
 		station.registerLine(this);
 		this.stations.add(station);
 	}
-	
-	@Override
-	public String toString() {
-		return "Line [lineColour=" + lineColour + ", trackColour=" + trackColour + ", name=" + name + "]";
-	}
 
 	/**
 	 * Finds if the given Station is the end of Line (first or last Station).
@@ -200,6 +195,11 @@ public class Line {
 	
 	public String getName(){
 		return name;
+	}
+	
+	@Override
+	public String toString() {
+		return "Line [lineColour=" + lineColour + ", trackColour=" + trackColour + ", name=" + name + "]";
 	}
 	
 }

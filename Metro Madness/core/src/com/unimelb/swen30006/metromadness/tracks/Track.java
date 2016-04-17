@@ -42,10 +42,6 @@ public class Track {
 		Track.idCount++;
 	}
 	
-	public void render(ShapeRenderer renderer){
-		renderer.rectLine(startPos.x, startPos.y, endPos.x, endPos.y, LINE_WIDTH);
-	}
-	
 	/**
 	 * Whether a Train can enter the Track or not.
 	 * @param forward Entry direction.
@@ -62,12 +58,6 @@ public class Track {
 	public void enter(boolean forward){
 		this.occupied = true;
 	}
-	
-	@Override
-	public String toString() {
-		return "Track [startPos=" + startPos + ", endPos=" + endPos + ", trackColour=" + trackColour + ", occupied="
-				+ occupied + "]";
-	}
 
 	/**
 	 * Let a Train leave the Track.
@@ -76,6 +66,10 @@ public class Track {
 	public void leave(boolean forward){
 		this.occupied = false;
 	}
+	
+	public void render(ShapeRenderer renderer){
+		renderer.rectLine(startPos.x, startPos.y, endPos.x, endPos.y, LINE_WIDTH);
+	}
 
 	/**
 	 * Get Track id.
@@ -83,5 +77,11 @@ public class Track {
 	 */
 	public int getId() {
 		return id;
+	}
+	
+	@Override
+	public String toString() {
+		return "Track [startPos=" + startPos + ", endPos=" + endPos + ", trackColour=" + trackColour + ", occupied="
+				+ occupied + "]";
 	}
 }

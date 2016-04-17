@@ -27,11 +27,16 @@ public class DualTrack extends Track {
 		this.backwardOccupied = false;
 	}
 	
-	public void render(ShapeRenderer renderer){
-		renderer.rectLine(startPos.x, startPos.y, endPos.x, endPos.y, LINE_WIDTH);
-		renderer.setColor(new Color(245f/255f,245f/255f,245f/255f,0.5f).lerp(this.trackColour, 0.5f));
-		renderer.rectLine(startPos.x, startPos.y, endPos.x, endPos.y, LINE_WIDTH/3);
-		renderer.setColor(this.trackColour);
+	/**
+	 * Whether a Train can enter the Track in the desired direction.
+	 */
+	@Override
+	public boolean canEnter(boolean forward) {
+		if(forward){
+			return !this.forwardOccupied;
+		} else {
+			return !this.backwardOccupied;
+		}
 	}
 	
 	/**
@@ -43,18 +48,6 @@ public class DualTrack extends Track {
 			this.forwardOccupied = true;
 		} else {
 			this.backwardOccupied = true;
-		}
-	}
-	
-	/**
-	 * Whether a Train can enter the Track in the desired direction.
-	 */
-	@Override
-	public boolean canEnter(boolean forward) {
-		if(forward){
-			return !this.forwardOccupied;
-		} else {
-			return !this.backwardOccupied;
 		}
 	}
 
@@ -70,10 +63,10 @@ public class DualTrack extends Track {
 		}
 	}
 	
-	
-	
-	
-	
-
-
+	public void render(ShapeRenderer renderer){
+		renderer.rectLine(startPos.x, startPos.y, endPos.x, endPos.y, LINE_WIDTH);
+		renderer.setColor(new Color(245f/255f,245f/255f,245f/255f,0.5f).lerp(this.trackColour, 0.5f));
+		renderer.rectLine(startPos.x, startPos.y, endPos.x, endPos.y, LINE_WIDTH/3);
+		renderer.setColor(this.trackColour);
+	}
 }

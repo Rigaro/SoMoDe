@@ -25,9 +25,9 @@ public class Station {
 	private static final int MAX_LINES=3;
 	private String name;
 	private int maxPassenger;
+	private static final float DEPARTURE_TIME = 2;
 	private ArrayList<Line> lines;
 	private ArrayList<Train> trains;
-	private static final float DEPARTURE_TIME = 2;
 	private PassengerGenerator generator;
 	private ArrayList<Passenger> waiting;
 
@@ -90,6 +90,17 @@ public class Station {
 	}
 	
 	/**
+	 * Checks if a platform at the Station servicing the given Line is available.
+	 * @param l the given Line.
+	 * @return true if there are available platforms for the Line.
+	 * @throws Exception Line not serviced by Station.
+	 */
+	public boolean canEnter(String line) throws Exception {
+		// It actually just checks if there are enough platforms.
+		return trains.size() < PLATFORMS;
+	}
+	
+	/**
 	 * Lets a Train enter the Station.
 	 * @param t The Train entering the Station.
 	 * @throws Exception Station Full
@@ -106,6 +117,31 @@ public class Station {
 		}
 	}
 	
+	/**
+	 * Processes the disembarking Passengers.
+	 * @param disembarking the disembarking Passengers.
+	 */
+	@SuppressWarnings("unused")
+	public void disembark(ArrayList<Passenger> disembarking){
+		int exited = 0;
+		int waited = 0;
+		for(Passenger passenger : disembarking){
+			// if Passenger reached destination let it out, otherwise return to waiting.
+			if(passenger.getDestination().equals(this.name)){
+				exited++;
+				passenger.exit();
+			}
+			else{
+				waited++;
+				waiting.add(passenger);
+			}
+		}
+		// Print statistics when Passengers exit.
+		if(exited>0)
+			System.out.println(exited + " Passengers reached their destination at " + this.name);
+		//System.out.println(waited + " Passengers waiting at " + this.name);
+	}
+		
 	/**
 	 * Processes the Passengers waiting to embark for a given Train.
 	 * @param embarkingTrain the embarking Train.
@@ -164,31 +200,6 @@ public class Station {
 	}
 	
 	/**
-	 * Processes the disembarking Passengers.
-	 * @param disembarking the disembarking Passengers.
-	 */
-	@SuppressWarnings("unused")
-	public void disembark(ArrayList<Passenger> disembarking){
-		int exited = 0;
-		int waited = 0;
-		for(Passenger passenger : disembarking){
-			// if Passenger reached destination let it out, otherwise return to waiting.
-			if(passenger.getDestination().equals(this.name)){
-				exited++;
-				passenger.exit();
-			}
-			else{
-				waited++;
-				waiting.add(passenger);
-			}
-		}
-		// Print statistics when Passengers exit.
-		if(exited>0)
-			System.out.println(exited + " Passengers reached their destination at " + this.name);
-		//System.out.println(waited + " Passengers waiting at " + this.name);
-	}
-	
-	/**
 	 * Checks if a Train can leave the Station.
 	 * @param t the Train leaving the Station.
 	 * @throws Exception Train not in Station.
@@ -244,31 +255,14 @@ public class Station {
 			throw new Exception();
 		}
 	}
-	
-	/**
-	 * Checks if a platform at the Station servicing the given Line is available.
-	 * @param l the given Line.
-	 * @return true if there are available platforms for the Line.
-	 * @throws Exception Line not serviced by Station.
-	 */
-	public boolean canEnter(String line) throws Exception {
-		// It actually just checks if there are enough platforms.
-		return trains.size() < PLATFORMS;
-	}
-
-	// Returns departure time in seconds
-	public float getDepartureTime() {
-		return DEPARTURE_TIME;
-	}
 
 	public void setGenerator(PassengerGenerator generator){
 		this.generator = generator;
 	}
 
-	@Override
-	public String toString() {
-		return "Station [position=" + position + ", name=" + name + ", trains=" + trains.size()
-				+ ", generator=" + generator + "]";
+	// Returns departure time in seconds
+	public float getDepartureTime() {
+		return DEPARTURE_TIME;
 	}
 
 	/**
@@ -285,5 +279,10 @@ public class Station {
 	public ArrayList<Line> getLines(){
 		return lines;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Station [position=" + position + ", name=" + name + ", trains=" + trains.size()
+				+ ", generator=" + generator + "]";
+	}
 }

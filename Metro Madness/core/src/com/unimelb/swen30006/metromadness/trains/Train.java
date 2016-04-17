@@ -169,6 +169,24 @@ public class Train {
 		float newY = this.pos.y + (float)( Math.sin(angle) * delta * TRAIN_SPEED);
 		this.pos.setLocation(newX, newY);
 	}
+
+	/**
+	 * Disembarks the Passengers that have the current Station as final or partial destination.
+	 * @return The List of Passengers disembarking the Train.
+	 */
+	public ArrayList<Passenger> processDisembarking(){
+		ArrayList<Passenger> disembarking = new ArrayList<Passenger>();
+		for(Passenger p : this.passengers){
+			if(p.shouldLeave(this.station.getName())){
+				disembarking.add(p);
+			}
+		}
+		for(Passenger p : disembarking){
+			this.passengers.remove(p);
+		}
+		//System.out.println(disembarking.size() + " Passengers disembarked " + this.trainLine + " at " + this.station.getName());
+		return disembarking;
+	}
 	
 	/**
 	 * Whether the Train is full or not.
@@ -196,31 +214,6 @@ public class Train {
 			throw new Exception();
 		}
 	}
-
-	/**
-	 * Disembarks the Passengers that have the current Station as final or partial destination.
-	 * @return The List of Passengers disembarking the Train.
-	 */
-	public ArrayList<Passenger> processDisembarking(){
-		ArrayList<Passenger> disembarking = new ArrayList<Passenger>();
-		for(Passenger p : this.passengers){
-			if(p.shouldLeave(this.station.getName())){
-				disembarking.add(p);
-			}
-		}
-		for(Passenger p : disembarking){
-			this.passengers.remove(p);
-		}
-		//System.out.println(disembarking.size() + " Passengers disembarked " + this.trainLine + " at " + this.station.getName());
-		return disembarking;
-	}
-
-	@Override
-	public String toString() {
-		return "Train [line=" + this.trainLine +", departureTimer=" + departureTimer + ", pos=" + pos + ", forward=" + forward + ", state=" + state
-				+ ", numTrips=" + numTrips + ", disembarked=" + disembarked + "]";
-	}
-
 	/**
 	 * Is the train in a Station?
 	 * @return whether the train is in a Station (true) or not (false).
@@ -267,5 +260,11 @@ public class Train {
 		this.trackId = trackId;
 		this.station = station;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Train [line=" + this.trainLine +", departureTimer=" + departureTimer + ", pos=" + pos + ", forward=" + forward + ", state=" + state
+				+ ", numTrips=" + numTrips + ", disembarked=" + disembarked + "]";
+	}
+
 }
