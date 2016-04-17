@@ -1,3 +1,8 @@
+/**
+ * Amy Lawson - 693920
+ * Joshua Moors - 542065
+ * Ricardo Garcia Rosas - 643952
+ */
 package com.unimelb.swen30006.metromadness.passengers;
 
 import java.util.ArrayList;
@@ -11,12 +16,16 @@ public class PassengerGenerator {
 	// The lines available
 	private ArrayList<Line> lines;
 	
+	/**
+	 * PassengerGenerator constructor.
+	 * @param lines the lines that are available in the network.
+	 */
 	public PassengerGenerator(ArrayList<Line> lines){
 		this.lines = lines;
 	}
 	
 	/**
-	 * Creates a bunch of Passengers.
+	 * Creates a bunch of new Passengers.
 	 * @param beginning the beginning Station.
 	 * @return the new group of Passengers.
 	 */

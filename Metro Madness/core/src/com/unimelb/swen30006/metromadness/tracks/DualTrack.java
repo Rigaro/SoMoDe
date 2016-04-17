@@ -1,3 +1,8 @@
+/**
+ * Amy Lawson - 693920
+ * Joshua Moors - 542065
+ * Ricardo Garcia Rosas - 643952
+ */
 package com.unimelb.swen30006.metromadness.tracks;
 
 import java.awt.geom.Point2D.Float;
@@ -7,8 +12,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class DualTrack extends Track {
 
-	public boolean forwardOccupied;
-	public boolean backwardOccupied;
+	private boolean forwardOccupied;
+	private boolean backwardOccupied;
 	
 	/**
 	 * DualTrack constructor.

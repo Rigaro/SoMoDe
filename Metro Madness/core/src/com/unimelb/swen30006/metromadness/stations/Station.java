@@ -1,16 +1,18 @@
+/**
+ * Amy Lawson - 693920
+ * Joshua Moors - 542065
+ * Ricardo Garcia Rosas - 643952
+ */
 package com.unimelb.swen30006.metromadness.stations;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.unimelb.swen30006.metromadness.passengers.Passenger;
 import com.unimelb.swen30006.metromadness.passengers.PassengerGenerator;
-import com.unimelb.swen30006.metromadness.routers.PassengerRouter;
 import com.unimelb.swen30006.metromadness.tracks.Line;
-import com.unimelb.swen30006.metromadness.tracks.Track;
 import com.unimelb.swen30006.metromadness.trains.Train;
 
 public class Station {
@@ -27,14 +29,14 @@ public class Station {
 	private ArrayList<Train> trains;
 	private static final float DEPARTURE_TIME = 2;
 	private PassengerGenerator generator;
-	public ArrayList<Passenger> waiting;
+	private ArrayList<Passenger> waiting;
 
 	/**
 	 * Station constructor.
 	 * @param x The x position.
 	 * @param y The y position.
-	 * @param router The PassengerRouter to be used.
 	 * @param name The Station's name.
+	 * @param maxPassenger The maximum passenger volume for creation.
 	 */
 	public Station(float x, float y, String name, int maxPassenger){
 		this.name = name;
@@ -53,6 +55,10 @@ public class Station {
 		this.lines.add(l);
 	}
 	
+	/**
+	 * Render the station.
+	 * @param renderer
+	 */
 	public void render(ShapeRenderer renderer){
 		float radius = RADIUS;
 		for(int i=0; (i<this.lines.size() && i<MAX_LINES); i++){
@@ -103,7 +109,6 @@ public class Station {
 	/**
 	 * Processes the Passengers waiting to embark for a given Train.
 	 * @param embarkingTrain the embarking Train.
-	 * @throws Exception Train is full.
 	 */
 	public void processEmbarking(Train embarkingTrain){
 		Line trainLine;
@@ -123,7 +128,7 @@ public class Station {
 		for(Passenger passenger : this.waiting){
 			// Check that the Train is not full
 			if(!embarkingTrain.canEmbark()){
-				return;
+				break;
 			}
 			// If Passenger should board, embark it.
 			if(passenger.shouldBoard(embarkingTrain.getTrainLine(), direction)){
@@ -131,7 +136,7 @@ public class Station {
 					embarkingTrain.embark(passenger);
 					embarking.add(passenger);
 				}catch(Exception e){
-					// Train full, break
+					// Train full, no need to continue
 					break;
 				}
 			}
@@ -150,8 +155,8 @@ public class Station {
 						embarkingTrain.embark(p);
 					}
 					catch(Exception e){
-						// Train full, break
-						break;
+						// Train full add passenger to waiting
+						this.waiting.add(p);
 					}
 				}
 				else{
@@ -167,6 +172,7 @@ public class Station {
 	 * Processes the disembarking Passengers.
 	 * @param disembarking the disembarking Passengers.
 	 */
+	@SuppressWarnings("unused")
 	public void disembark(ArrayList<Passenger> disembarking){
 		int exited = 0;
 		int waited = 0;
@@ -202,9 +208,11 @@ public class Station {
 			if(trainLine.endOfLine(this)){
 				direction = !direction;
 			}
-			// Get the new 
+			// Get the next Track.
 			int nextTrackId = trainLine.nextTrack(this, direction);
+			// Check if the Track is available.
 			if(trainLine.trackAvailable(nextTrackId, direction)){
+				// Lock Track to avoid other Trains getting into it.
 				trainLine.enterTrack(nextTrackId, direction);
 				return true;
 			}
@@ -249,6 +257,7 @@ public class Station {
 	 * @throws Exception Line not serviced by Station.
 	 */
 	public boolean canEnter(String line) throws Exception {
+		// It actually just checks if there are enough platforms.
 		return trains.size() < PLATFORMS;
 	}
 

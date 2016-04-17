@@ -1,3 +1,8 @@
+/**
+ * Amy Lawson - 693920
+ * Joshua Moors - 542065
+ * Ricardo Garcia Rosas - 643952
+ */
 package com.unimelb.swen30006.metromadness.passengers;
 
 import java.util.Stack;

@@ -1,3 +1,8 @@
+/**
+ * Amy Lawson - 693920
+ * Joshua Moors - 542065
+ * Ricardo Garcia Rosas - 643952
+ */
 package com.unimelb.swen30006.metromadness.trains;
 
 import java.awt.geom.Point2D;
@@ -49,9 +54,10 @@ public class Train {
 
 	/**
 	 * Train constructor.
-	 * @param trainLine The Line the train is going to service.
+	 * @param trainLine The Line name the train is going to service.
 	 * @param start The Station where the train will start its service.
 	 * @param forward The direction of the train.
+	 * @param the Train's capacity.
 	 */
 	public Train(String trainLine, Station start, boolean forward, int maxPassenger){
 		this.trainLine = trainLine;
@@ -178,7 +184,7 @@ public class Train {
 	}
 
 	/**
-	 * Embark a given passenger to the train. Not properly implemented (kind of abstract).
+	 * Embark a given passenger to the train.
 	 * @param p The Passenger to embark the Train.
 	 * @throws Exception Train full Exception.
 	 */

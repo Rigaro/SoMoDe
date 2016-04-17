@@ -1,3 +1,8 @@
+/**
+ * Amy Lawson - 693920
+ * Joshua Moors - 542065
+ * Ricardo Garcia Rosas - 643952
+ */
 package com.unimelb.swen30006.metromadness.tracks;
 
 import java.util.ArrayList;
@@ -146,7 +151,7 @@ public class Line {
 	}
 	
 	/**
-	 * Clears a Track when a Train leaves it in a certain direction.
+	 * Checks if a track is available in a certain direction.
 	 * @param trackId the Track's id.
 	 * @param forward the travel direction
 	 */
