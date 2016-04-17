@@ -97,18 +97,14 @@ public class Train {
 			// embark the waiting passenger
 			// and wait 10 seconds for incoming passgengers
 			if(!this.disembarked){
-				System.out.println("Disembarking");
 				this.station.disembark(this.processDisembarking());
 				this.departureTimer = this.station.getDepartureTime();
 				this.disembarked = true;
 				this.embarked = false;
-				System.out.println("Disembarked");
 			} else if(!this.embarked){
-				System.out.println("Embarking");
 				// Tell station to process waiting to embark Passengers.
 				this.station.processEmbarking(this);
 				this.embarked = true;
-				System.out.println("Embarked");
 			} else {
 				// Count down if departure timer. 
 				if(this.departureTimer>0){
@@ -176,7 +172,6 @@ public class Train {
 	
 	public boolean canEmbark(){
 		if(this.passengers.size()<this.maxPassenger){
-			System.out.println(this.passengers.size());
 			return true;
 		}
 		else{
@@ -192,11 +187,10 @@ public class Train {
 	public void embark(Passenger passenger) throws Exception {
 		if(this.passengers.size()<this.maxPassenger){
 			this.passengers.add(passenger);
-			System.out.println("Embark");
 		}
-		else
+		else{
 			throw new Exception();
-			System.out.println("Exception");
+		}
 	}
 
 	/**
@@ -205,14 +199,15 @@ public class Train {
 	 */
 	public ArrayList<Passenger> processDisembarking(){
 		ArrayList<Passenger> disembarking = new ArrayList<Passenger>();
-		Iterator<Passenger> iterator = this.passengers.iterator();
-		while(iterator.hasNext()){
-			Passenger p = iterator.next();
+		for(Passenger p : this.passengers){
 			if(p.shouldLeave(this.station.getName())){
 				disembarking.add(p);
-				iterator.remove();
 			}
 		}
+		for(Passenger p : disembarking){
+			this.passengers.remove(p);
+		}
+		System.out.println(disembarking.size() + " Passengers disembarked " + this.trainLine + " at " + this.station.getName());
 		return disembarking;
 	}
 

@@ -35,11 +35,38 @@ public class PassengerGenerator {
 	 * @return the new Passenger.
 	 */
 	public Passenger generatePassenger(Station beginning){
+		/**
+		// Testing
+		// Create route
+		Stack<String> direction = new Stack<String>();
+		Stack<String> lineRoute = new Stack<String>();
+		Stack<String> stationRoute = new Stack<String>();
+		String destination;
+		direction.push("backward");
+		direction.push("forward");
+		ArrayList<Line> startLines = beginning.getLines();
+		Line startLine = startLines.get(0);
+		if(startLine.getName().equals("Hurstbridge")){
+			destination = "Sandringham";
+			lineRoute.push("Sandringham");
+			lineRoute.push("Hurstbridge");
+			stationRoute.push("Sandringham");
+			stationRoute.push("Melbourne Central");
+		}
+		else{
+			destination = "Hurstbridge";
+			lineRoute.push("Hurstbridge");
+			lineRoute.push("Sandringham");
+			stationRoute.push("Hurstbridge");
+			stationRoute.push("Melbourne Central");
+		}
+		return new Passenger(destination,lineRoute,stationRoute,direction);
+		**/
 		// Get the start lines
 		ArrayList<Line> startLines = beginning.getLines();
 		Line startLine = startLines.get(0);
 		// Pick a random line
-		Line endLine = this.lines.get((int)Math.random()*(this.lines.size()-1));
+		Line endLine = this.lines.get((int)(Math.random()*(this.lines.size()-1)));
 		// Check if no line change needed
 		boolean lineChange = true;
 		for(Line line : startLines){
@@ -51,7 +78,7 @@ public class PassengerGenerator {
 		}
 		// Pick a random station from that line
 		ArrayList<Station> stations = endLine.getStations();
-		Station destination = stations.get((int)Math.random()*(stations.size()-1));
+		Station destination = stations.get((int)(Math.random()*(stations.size()-1)));
 		// Create route
 		Stack<String> direction = new Stack<String>();
 		Stack<String> lineRoute = new Stack<String>();
@@ -62,7 +89,8 @@ public class PassengerGenerator {
 		if(lineChange){
 			// Add the 3rd last station to route as the transfer hub since all Lines
 			// go through all of the City Loop stations.
-			stationRoute.push(endLine.getStations().get(3).getName());
+			ArrayList<Station> lineStations = endLine.getStations();
+			stationRoute.push(lineStations.get(lineStations.size()-4).getName());
 			// Add the start line
 			lineRoute.push(startLine.getName());
 			// Move forward to the transfer hub and then change direction.
@@ -80,7 +108,6 @@ public class PassengerGenerator {
 		}
 		// Create the Passenger
 		return new Passenger(destination.getName(),lineRoute,stationRoute,direction);
-		
 	}
 	
 	public void addLines(ArrayList<Line> lines){

@@ -106,6 +106,18 @@ public class Station {
 	 * @throws Exception Train is full.
 	 */
 	public void processEmbarking(Train embarkingTrain){
+		Line trainLine;
+		boolean direction = embarkingTrain.getDirection();
+		// If this station is the end of line for the train line, tell passengers
+		// that the train is going in the opposite direction.
+		try{
+			trainLine = this.getLine(embarkingTrain.getTrainLine());
+			if(trainLine.endOfLine(this))
+				direction = !direction;
+		}
+		catch(Exception e){
+			System.out.println("Station not found");
+		}
 		// Add the waiting Passengers
 		ArrayList<Passenger> embarking = new ArrayList<Passenger>();
 		for(Passenger passenger : this.waiting){
@@ -114,7 +126,7 @@ public class Station {
 				return;
 			}
 			// If Passenger should board, embark it.
-			if(passenger.shouldBoard(embarkingTrain.getTrainLine(), embarkingTrain.getDirection())){
+			if(passenger.shouldBoard(embarkingTrain.getTrainLine(), direction)){
 				try{
 					embarkingTrain.embark(passenger);
 					embarking.add(passenger);
@@ -128,14 +140,12 @@ public class Station {
 		for(Passenger passenger : embarking){
 			waiting.remove(passenger);			
 		}
-		System.out.println("Processed waiting");
 		// Create a new set of passengers and check if they can board
 		Passenger[] ps = this.generator.generatePassengers(this,this.maxPassenger);
 		for(Passenger p: ps){
 			// If can embark check if the passenger wants to board that train
 			if(embarkingTrain.canEmbark()){
-				if(p.shouldBoard(embarkingTrain.getTrainLine(), embarkingTrain.getDirection())){
-					System.out.println("Should board: " + p.toString());
+				if(p.shouldBoard(embarkingTrain.getTrainLine(), direction)){
 					try{
 						embarkingTrain.embark(p);
 					}
@@ -151,7 +161,6 @@ public class Station {
 				this.waiting.add(p);
 			}
 		}
-		System.out.println("Processed new");
 	}
 	
 	/**
@@ -159,15 +168,21 @@ public class Station {
 	 * @param disembarking the disembarking Passengers.
 	 */
 	public void disembark(ArrayList<Passenger> disembarking){
+		int exited = 0;
+		int waited = 0;
 		for(Passenger passenger : disembarking){
 			// if Passenger reached destination let it out, otherwise return to waiting.
 			if(passenger.getDestination().equals(this.name)){
+				exited++;
 				passenger.exit();
 			}
 			else{
+				waited++;
 				waiting.add(passenger);
 			}
 		}
+		System.out.println(exited + " Passengers exited at " + this.name);
+		System.out.println(waited + " Passengers waiting at " + this.name);
 	}
 	
 	/**
@@ -187,7 +202,12 @@ public class Station {
 			}
 			// Get the new 
 			int nextTrackId = trainLine.nextTrack(this, direction);
-			return trainLine.trackAvailable(nextTrackId, direction);
+			if(trainLine.trackAvailable(nextTrackId, direction)){
+				trainLine.enterTrack(nextTrackId, direction);
+				return true;
+			}
+			else
+				return false;
 		} else {
 			throw new Exception();
 		}
@@ -205,7 +225,6 @@ public class Station {
 			Line trainLine = getLine(departingTrain.getTrainLine());
 			// Change direction if this Station is the end of Line.
 			if(trainLine.endOfLine(this)){
-				System.out.println("EOL");
 				departingTrain.setDirection(!direction);
 				direction = !direction;
 			}

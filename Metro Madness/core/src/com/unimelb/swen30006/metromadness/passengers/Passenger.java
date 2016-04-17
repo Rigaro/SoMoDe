@@ -55,18 +55,22 @@ public class Passenger implements PassengerRouter{
 		else
 			direction = "backward";
 		// Check if the Train is traveling on the line and direction of the Passenger's route.
-		if(this.lineRoute.peek().equals(line)&&this.direction.peek().equals(direction)){
-			this.lineRoute.pop();
-			this.direction.pop();
-			return true;
-		}
-		else{
+		try{
+			if(this.lineRoute.peek().equals(line)&&this.direction.peek().equals(direction)){
+				this.lineRoute.pop();
+				this.direction.pop();
+				return true;
+			}
+			else{
+				return false;
+			}
+		}catch(Exception e){
 			return false;
 		}
 	}
 
 	public String getDestination(){
-		return destination;
+		return this.destination;
 	}
 	
 	public void exit(){

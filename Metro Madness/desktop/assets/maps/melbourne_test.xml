@@ -966,55 +966,6 @@
 		</train>
 		<train>
 			<type>Train</type>
-			<line>Werribee</line>
-			<start>Werribee</start>
-			<direction>forward</direction>
-			<capacity> 500 </capacity>
-		</train>
-		<train>
-			<type>Train</type>
-			<line>Williamstown</line>
-			<start>Williamstown</start>
-			<direction>forward</direction>
-			<capacity> 500 </capacity>
-		</train>
-		<train>
-			<type>Train</type>
-			<line>Sydenham</line>
-			<start>Sydenham</start>
-			<direction>forward</direction>
-			<capacity> 500 </capacity>
-		</train>
-		<train>
-			<type>Train</type>
-			<line>Upfield</line>
-			<start>Upfield</start>
-			<direction>forward</direction>
-			<capacity> 500 </capacity>
-		</train>
-		<train>
-			<type>Train</type>
-			<line>Craigieburn</line>
-			<start>Craigieburn</start>
-			<direction>forward</direction>
-			<capacity> 500 </capacity>
-		</train>
-		<train>
-			<type>Train</type>
-			<line>Frankston</line>
-			<start>Frankston</start>
-			<direction>forward</direction>
-			<capacity> 500 </capacity>
-		</train>
-		<train>
-			<type>Train</type>
-			<line>Pakenham</line>
-			<start>Pakenham</start>
-			<direction>forward</direction>
-			<capacity> 500 </capacity>
-		</train>
-		<train>
-			<type>Train</type>
 			<line>Sandringham</line>
 			<start>Sandringham</start>
 			<direction>forward</direction>
