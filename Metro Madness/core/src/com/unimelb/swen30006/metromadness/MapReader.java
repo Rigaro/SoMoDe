@@ -11,8 +11,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
-
-
+import com.unimelb.swen30006.metromadness.passengers.PassengerGenerator;
 // The things we are generating
 import com.unimelb.swen30006.metromadness.routers.PassengerRouter;
 import com.unimelb.swen30006.metromadness.routers.SimpleRouter;
@@ -52,7 +51,7 @@ public class MapReader {
 			Array<Element> stationList = stations.getChildrenByName("station");
 			for(Element e : stationList){
 				Station s = processStation(e);
-				this.stations.put(s.name, s);
+				this.stations.put(s.getName(), s);
 			}
 			
 			// Process Lines
@@ -60,8 +59,10 @@ public class MapReader {
 			Array<Element> lineList = lines.getChildrenByName("line");
 			for(Element e : lineList){
 				Line l = processLine(e);
-				this.lines.put(l.name, l);
+				this.lines.put(l.getName(), l);
 			}
+
+			PassengerGenerator g = createGenerator(this.getLines(),maxPax);
 
 			// Process Trains
 			Element trains = root.getChildByName("trains");
@@ -107,11 +108,11 @@ public class MapReader {
 		
 		// Make the train
 		if(type.equals("BigPassenger")){
-			return new BigPassengerTrain(l,s,dir);
+			return new Train(l.getName(),s,dir,80);
 		} else if (type.equals("SmallPassenger")){
-			return new SmallPassengerTrain(l,s,dir);
+			return new Train(l.getName(),s,dir,10);
 		} else {
-			return new Train(l, s, dir);
+			return new Train(l.getName(), s, dir, 100);
 		}
 	}
 
@@ -120,13 +121,11 @@ public class MapReader {
 		String name = e.get("name");
 		int x_loc = e.getInt("x_loc")/8;
 		int y_loc = e.getInt("y_loc")/8;
-		String router = e.get("router");
-		PassengerRouter r = createRouter(router);
+		int maxPax = e.getInt("max_passengers");
 		if(type.equals("Active")){
-			int maxPax = e.getInt("max_passengers");
-			return new ActiveStation(x_loc, y_loc, r, name, maxPax);
+			return new Station(x_loc, y_loc, name, maxPax);
 		} else if (type.equals("Passive")){
-			return new Station(x_loc, y_loc, r, name);
+			return new Station(x_loc, y_loc, name, maxPax);
 		}
 		
 		return null;
@@ -148,11 +147,8 @@ public class MapReader {
 		return l;
 	}
 	
-	private PassengerRouter createRouter(String type){
-		if(type.equals("simple")){
-			return new SimpleRouter();
-		}
-		return null;
+	private PassengerGenerator createGenerator(Collection<Line> lines, float maxVolume){
+		return new PassengerGenerator(lines, maxVolume);
 	}
 	
 	private Color extractColour(Element e){

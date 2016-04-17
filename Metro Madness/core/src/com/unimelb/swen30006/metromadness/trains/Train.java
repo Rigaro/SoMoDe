@@ -54,11 +54,12 @@ public class Train {
 	 * @param start The Station where the train will start its service.
 	 * @param forward The direction of the train.
 	 */
-	public Train(String trainLine, Station start, boolean forward){
+	public Train(String trainLine, Station start, boolean forward, int maxPassenger){
 		this.trainLine = trainLine;
 		this.station = start;
 		this.state = State.FROM_DEPOT;
 		this.forward = forward;
+		this.maxPassenger = maxPassenger;
 		this.passengers = new ArrayList<Passenger>();
 	}
 
@@ -100,47 +101,36 @@ public class Train {
 				this.embarked = false;
 			} else if(!this.embarked){
 				// Tell station to process waiting to embark Passengers.
-				this.station.processEmbarking(this);
-				
+				try {
+					this.station.processEmbarking(this);
+				}
+				catch(Exception e){
+					// Critical failure
+					return;
+				}
+				this.embarked = true;
 			} else {
 				// Count down if departure timer. 
 				if(this.departureTimer>0){
 					this.departureTimer -= delta;
 				} else {
-					// We are ready to depart, find the next track and wait until we can enter 
-					try {
-						boolean endOfLine = this.trainLine.endOfLine(this.station);
-						if(endOfLine){
-							this.forward = !this.forward;
-						}
-						this.trackId = this.trainLine.nextTrack(this.station, this.forward);
-						this.state = State.READY_DEPART;
-						break;
-					} catch (Exception e){
-						// Massive error.
-						return;
-					}
+					// We are ready to depart 
+					this.state = State.READY_DEPART;
+					break;
 				}
 			}
 			break;
 		case READY_DEPART:
 
-			// When ready to depart, check that the track is clear and if
-			// so, then occupy it if possible.
-			if(this.trackId.canEnter(this.forward)){
-				try {
-					// Find the next
-					Station next = this.trainLine.nextStation(this.station, this.forward);
-					// Depart our current station
+			// When ready to depart, check that station allows departure
+			try{
+				if(this.station.canDepart(this)){
 					this.station.depart(this);
-					this.station = next;
-
-				} catch (Exception e) {
-//					e.printStackTrace();
-				}
-				this.trackId.enter(this);
-				this.state = State.ON_ROUTE;
-			}		
+					this.state = State.ON_ROUTE;
+				}		
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 			break;
 		case ON_ROUTE:
 
@@ -157,11 +147,11 @@ public class Train {
 			// then we need to enter, otherwise we just wait
 			try {
 				if(this.station.canEnter(this.trainLine)){
-					this.trackId.leave(this);
-					this.pos = (Point2D.Float) this.station.getPosition().clone();
 					this.station.enter(this);
+					this.pos = (Point2D.Float) this.station.getPosition().clone();
 					this.state = State.IN_STATION;
 					this.disembarked = false;
+					this.embarked = false;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
