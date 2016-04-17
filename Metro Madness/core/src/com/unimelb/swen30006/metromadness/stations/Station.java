@@ -2,6 +2,7 @@ package com.unimelb.swen30006.metromadness.stations;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -92,8 +93,28 @@ public class Station {
 		} else {
 			// Add Train to platforms and clear the Track it was using.
 			this.trains.add(incomingTrain);
-			Line trainLine = getLine(incomingTrain.trainLine);
+			Line trainLine = getLine(incomingTrain.getTrainLine());
 			trainLine.clearTrack(incomingTrain.getTrackId(), incomingTrain.getDirection());
+		}
+	}
+	
+	/**
+	 * Processes the Passengers waiting to embark for a given Train.
+	 * @param embarkingTrain the embarking Train.
+	 * @throws Exception Train is full.
+	 */
+	public void processEmbarking(Train embarkingTrain) throws Exception{
+		Iterator<Passenger> iterator = this.waiting.iterator();
+		while(iterator.hasNext()){
+			Passenger passenger = iterator.next();
+			// Check that the Train is not full
+			if(!embarkingTrain.canEmbark())
+				break;
+			// If Passenger should board, embark it and remove from waiting.
+			if(passenger.shouldBoard(embarkingTrain.getTrainLine(), embarkingTrain.getDirection())){
+				embarkingTrain.embark(passenger);
+				iterator.remove();
+			}
 		}
 	}
 	
@@ -101,10 +122,10 @@ public class Station {
 	 * Processes the disembarking Passengers.
 	 * @param disembarking the disembarking Passengers.
 	 */
-	public void processDisembarking(ArrayList<Passenger> disembarking){
+	public void disembark(ArrayList<Passenger> disembarking){
 		for(Passenger passenger : disembarking){
 			// if Passenger reached destination let it out, otherwise return to waiting.
-			if(passenger.getDestination()==this.name){
+			if(passenger.getDestination().equals(this.name)){
 				passenger.exit();
 			}
 			else{
@@ -123,7 +144,7 @@ public class Station {
 		if(this.trains.contains(departingTrain)){
 			// Get the direction and the Line the Train is servicing.
 			boolean direction = departingTrain.getDirection();
-			Line trainLine = getLine(departingTrain.trainLine);
+			Line trainLine = getLine(departingTrain.getTrainLine());
 			// Change direction if this Station is the end of Line.
 			if(trainLine.endOfLine(this)){
 				departingTrain.setDirection(!direction);
@@ -146,7 +167,7 @@ public class Station {
 		if(this.trains.contains(departingTrain)){
 			// Get the direction and the Line the Train is servicing.
 			boolean direction = departingTrain.getDirection();
-			Line trainLine = getLine(departingTrain.trainLine);
+			Line trainLine = getLine(departingTrain.getTrainLine());
 			// Change direction if this Station is the end of Line.
 			if(trainLine.endOfLine(this)){
 				departingTrain.setDirection(!direction);
@@ -196,4 +217,9 @@ public class Station {
 	public String getName(){
 		return name;
 	}
+	
+	public ArrayList<Line> getLines(){
+		return lines;
+	}
+	
 }
