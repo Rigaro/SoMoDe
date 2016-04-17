@@ -181,8 +181,10 @@ public class Station {
 				waiting.add(passenger);
 			}
 		}
-		System.out.println(exited + " Passengers exited at " + this.name);
-		System.out.println(waited + " Passengers waiting at " + this.name);
+		// Print statistics when Passengers exit.
+		if(exited>0)
+			System.out.println(exited + " Passengers reached their destination at " + this.name);
+		//System.out.println(waited + " Passengers waiting at " + this.name);
 	}
 	
 	/**

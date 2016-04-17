@@ -1,7 +1,6 @@
 package com.unimelb.swen30006.metromadness.passengers;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Stack;
 
 import com.unimelb.swen30006.metromadness.stations.Station;
@@ -12,7 +11,8 @@ public class PassengerGenerator {
 	// The lines available
 	private ArrayList<Line> lines;
 	
-	public PassengerGenerator(){
+	public PassengerGenerator(ArrayList<Line> lines){
+		this.lines = lines;
 	}
 	
 	/**
@@ -35,33 +35,6 @@ public class PassengerGenerator {
 	 * @return the new Passenger.
 	 */
 	public Passenger generatePassenger(Station beginning){
-		/**
-		// Testing
-		// Create route
-		Stack<String> direction = new Stack<String>();
-		Stack<String> lineRoute = new Stack<String>();
-		Stack<String> stationRoute = new Stack<String>();
-		String destination;
-		direction.push("backward");
-		direction.push("forward");
-		ArrayList<Line> startLines = beginning.getLines();
-		Line startLine = startLines.get(0);
-		if(startLine.getName().equals("Hurstbridge")){
-			destination = "Sandringham";
-			lineRoute.push("Sandringham");
-			lineRoute.push("Hurstbridge");
-			stationRoute.push("Sandringham");
-			stationRoute.push("Melbourne Central");
-		}
-		else{
-			destination = "Hurstbridge";
-			lineRoute.push("Hurstbridge");
-			lineRoute.push("Sandringham");
-			stationRoute.push("Hurstbridge");
-			stationRoute.push("Melbourne Central");
-		}
-		return new Passenger(destination,lineRoute,stationRoute,direction);
-		**/
 		// Get the start lines
 		ArrayList<Line> startLines = beginning.getLines();
 		Line startLine = startLines.get(0);
@@ -108,10 +81,5 @@ public class PassengerGenerator {
 		}
 		// Create the Passenger
 		return new Passenger(destination.getName(),lineRoute,stationRoute,direction);
-	}
-	
-	public void addLines(ArrayList<Line> lines){
-		this.lines = lines;
-	}
-	
+	}	
 }

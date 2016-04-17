@@ -11,18 +11,15 @@ import com.unimelb.swen30006.metromadness.trains.Train;
 
 public class Simulation {
 	
-	public ArrayList<Station> stations;
-	public ArrayList<Line> lines;
-	public ArrayList<Train> trains;
+	private ArrayList<Station> stations;
+	private ArrayList<Line> lines;
+	private ArrayList<Train> trains;
 	private PassengerGenerator generator;
 	
 	public Simulation(String fileName){
 		// Create a map reader and read in the file
 		MapReader m = new MapReader(fileName);
 		m.process();
-
-		// Create generator
-		this.generator = new PassengerGenerator();
 		
 		// Create a list of lines
 		this.lines = new ArrayList<Line>();
@@ -32,17 +29,17 @@ public class Simulation {
 		this.stations = new ArrayList<Station>();
 		this.stations.addAll(m.getStations());
 		
-		// Add generator to Stations
-		for(Station station : this.stations){
-			station.setGenerator(this.generator);
-		}
 		
 		// Create a list of trains
 		this.trains = new ArrayList<Train>();
 		this.trains.addAll(m.getTrains());
-		
-		// Add Lines to generator
-		generator.addLines(this.lines);
+
+		// Create generator
+		this.generator = new PassengerGenerator(this.lines);
+		// Add generator to Stations
+		for(Station station : this.stations){
+			station.setGenerator(this.generator);
+		}
 	}
 	
 	

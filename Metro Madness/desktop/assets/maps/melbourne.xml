@@ -960,7 +960,7 @@
 		<train>
 			<type>Train</type>
 			<line>Hurstbridge</line>
-			<start>Rosanna</start>
+			<start>Hurstbridge</start>
 			<direction>forward</direction>
 			<capacity> 500 </capacity>
 		</train>
@@ -1017,6 +1017,41 @@
 			<type>Train</type>
 			<line>Sandringham</line>
 			<start>Sandringham</start>
+			<direction>forward</direction>
+			<capacity> 500 </capacity>
+		</train>
+		<train>
+			<type>Train</type>
+			<line>Epping</line>
+			<start>Epping</start>
+			<direction>forward</direction>
+			<capacity> 500 </capacity>
+		</train>
+		<train>
+			<type>Train</type>
+			<line>Lilydale</line>
+			<start>Lilydale</start>
+			<direction>forward</direction>
+			<capacity> 500 </capacity>
+		</train>
+		<train>
+			<type>Train</type>
+			<line>Belgrave</line>
+			<start>Belgrave</start>
+			<direction>forward</direction>
+			<capacity> 500 </capacity>
+		</train>
+		<train>
+			<type>Train</type>
+			<line>Alamein</line>
+			<start>Alamein</start>
+			<direction>forward</direction>
+			<capacity> 500 </capacity>
+		</train>
+		<train>
+			<type>Train</type>
+			<line>Glen Waverley</line>
+			<start>Glen Waverley</start>
 			<direction>forward</direction>
 			<capacity> 500 </capacity>
 		</train>

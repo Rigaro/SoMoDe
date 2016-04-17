@@ -23,6 +23,7 @@ public class MapReader {
 	private HashMap<String, Line> lines;
 
 	private boolean processed;
+	@SuppressWarnings("unused")
 	private String filename;
 
 	public MapReader(String filename){

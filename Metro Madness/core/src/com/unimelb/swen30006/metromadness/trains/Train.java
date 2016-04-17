@@ -2,14 +2,11 @@ package com.unimelb.swen30006.metromadness.trains;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.unimelb.swen30006.metromadness.passengers.Passenger;
 import com.unimelb.swen30006.metromadness.stations.Station;
-import com.unimelb.swen30006.metromadness.tracks.Line;
-import com.unimelb.swen30006.metromadness.tracks.Track;
 
 public class Train {
 
@@ -19,10 +16,12 @@ public class Train {
 	}
 
 	// Constants
+	@SuppressWarnings("unused")
 	private static final int MAX_TRIPS=4;
 	private static final Color FORWARD_COLOUR = Color.ORANGE;
 	private static final Color BACKWARD_COLOUR = Color.VIOLET;
 	private static final float TRAIN_WIDTH=4;
+	@SuppressWarnings("unused")
 	private static final float TRAIN_LENGTH = 6;
 	private static final float TRAIN_SPEED=50f;
 
@@ -78,7 +77,6 @@ public class Train {
 		case FROM_DEPOT:
 			// We have our station initialized we just need to retrieve the next track, enter the
 			// current station offically and mark as in station
-			//System.out.println("Depot" + this.toString());
 			try {
 				if(this.station.canEnter(this.trainLine)){
 					this.station.enter(this);
@@ -91,8 +89,6 @@ public class Train {
 				e.printStackTrace();
 			}
 		case IN_STATION:
-			//System.out.println("Station" + this.toString());
-
 			// When in station we want to disembark passengers 
 			// embark the waiting passenger
 			// and wait 10 seconds for incoming passgengers
@@ -117,7 +113,6 @@ public class Train {
 			}
 			break;
 		case READY_DEPART:
-
 			// When ready to depart, check that station allows departure
 			try{
 				if(this.station.canDepart(this)){
@@ -129,7 +124,6 @@ public class Train {
 			}
 			break;
 		case ON_ROUTE:
-
 			// Checkout if we have reached the new station
 			if(this.pos.distance(this.station.getPosition()) < 10 ){
 				this.state = State.WAITING_ENTRY;
@@ -170,6 +164,10 @@ public class Train {
 		this.pos.setLocation(newX, newY);
 	}
 	
+	/**
+	 * Whether the Train is full or not.
+	 * @return true if the Train still has room for Passengers.
+	 */
 	public boolean canEmbark(){
 		if(this.passengers.size()<this.maxPassenger){
 			return true;
@@ -207,7 +205,7 @@ public class Train {
 		for(Passenger p : disembarking){
 			this.passengers.remove(p);
 		}
-		System.out.println(disembarking.size() + " Passengers disembarked " + this.trainLine + " at " + this.station.getName());
+		//System.out.println(disembarking.size() + " Passengers disembarked " + this.trainLine + " at " + this.station.getName());
 		return disembarking;
 	}
 
@@ -232,8 +230,9 @@ public class Train {
 	public void render(ShapeRenderer renderer){
 		if(!this.inStation()){
 			Color col = this.forward ? FORWARD_COLOUR : BACKWARD_COLOUR;
-			renderer.setColor(col);
-			renderer.circle(this.pos.x, this.pos.y, TRAIN_WIDTH);
+			float percentage = this.passengers.size()/(float)this.maxPassenger;
+			renderer.setColor(col.cpy().lerp(Color.DARK_GRAY, percentage));
+			renderer.circle(this.pos.x, this.pos.y, TRAIN_WIDTH*(1+percentage));
 		}
 	}
 	
@@ -253,6 +252,11 @@ public class Train {
 		this.forward = forward;
 	}
 	
+	/**
+	 * Updates the trackId and Station to the ones traveling to next.
+	 * @param trackId
+	 * @param station
+	 */
 	public void updateNext(int trackId, Station station){
 		this.trackId = trackId;
 		this.station = station;

@@ -10,13 +10,16 @@ public class Passenger implements PassengerRouter{
 	private Stack<String> lineRoute;
 	private Stack<String> stationRoute;
 	private Stack<String> direction;
+	@SuppressWarnings("unused")
 	private float travelTime;
 	private boolean reachedDestination;
 	
 	/**
-	 * Passenger constructor
-	 * @param start
-	 * @param end
+	 * Passenger constructor.
+	 * @param destination the Passenger's destination.
+	 * @param lineRoute the Passenger's route lines.
+	 * @param stationRoute the Passenger's route stations.
+	 * @param direction the Passenger's route directions.
 	 */
 	public Passenger(String destination, Stack<String> lineRoute, Stack<String> stationRoute, Stack<String> direction){
 		this.destination = destination;
@@ -37,7 +40,12 @@ public class Passenger implements PassengerRouter{
 		}
 	}
 	
+	/**
+	 * Whether should the Passenger leave the Train at the current Station or not.
+	 */
+	@Override
 	public boolean shouldLeave(String station){
+		// Check if the station is the next one in the route.
 		if(stationRoute.peek().equals(station)){
 			stationRoute.pop();
 			return true;
@@ -47,6 +55,10 @@ public class Passenger implements PassengerRouter{
 		}
 	}
 	
+	/**
+	 * Whether should the Passenger board the Train servicing the Line in a certain direction or not.
+	 */
+	@Override
 	public boolean shouldBoard(String line, boolean forward){
 		// Transform direction to string for comparison
 		String direction;
@@ -65,6 +77,8 @@ public class Passenger implements PassengerRouter{
 				return false;
 			}
 		}catch(Exception e){
+			// Something bad happened and there are no stations left in stack.
+			// Maybe it's a bum trying to get some sleep in that Train.
 			return false;
 		}
 	}
@@ -73,6 +87,9 @@ public class Passenger implements PassengerRouter{
 		return this.destination;
 	}
 	
+	/**
+	 * Let the Passenger exit the station, reached destination!
+	 */
 	public void exit(){
 		reachedDestination = true;
 	}
